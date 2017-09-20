@@ -13,6 +13,11 @@ namespace PriceListWcfService
     {
         public GetSuppliersResponse GetSuppliers()
         {
+            GetSuppliersResponse responseObject = new GetSuppliersResponse()
+            {
+                ErrorCode = ResponseErrorCode.NoError
+            };
+
             using (Mutex accessMutex = new Mutex(false, Utility.Utility.SupplierMutexName))
             {
                 try
@@ -20,38 +25,23 @@ namespace PriceListWcfService
                     // Prevent other instance from accessing the table until we are done.
                     accessMutex.WaitOne();
 
-                    return new GetSuppliersResponse
+                    using (IDataAccess dataAccess = GetDataAccessObject())
                     {
-                        ErrorCode = ResponseErrorCode.ExceptionCaught,
-                        ErrorDescription = "Wat kyk jy?"
-/*
-                        Suppliers = new List<SupplierDTO>()
-                        {
-                            new SupplierDTO()
-                            {
-                                SupplierID = 1,
-                                UniqueIdentifier = Guid.NewGuid(),
-                                Code = "SUPP1",
-                                Descr = "Big Supplier",
-                                Address = new List<String>() { "Here", "There", "Everywhere" }
-                            },
-                            new SupplierDTO()
-                            {
-                                SupplierID = 2,
-                                UniqueIdentifier = Guid.NewGuid(),
-                                Code = "SUPP2",
-                                Descr = "Biger Supplier",
-                                Address = new List<String>() { "Tom", "Dick", "Harry" }
-                            },
-                        }
-                        */
-                    };
+                        responseObject.Suppliers = new List<SupplierDTO>(dataAccess.GetSuppliers());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    responseObject.ErrorCode = ResponseErrorCode.ExceptionCaught;
+                    responseObject.ErrorDescription = ex.Message;
                 }
                 finally
                 {
                     accessMutex.ReleaseMutex();
                 }
             }
+
+            return responseObject;
         }
 
         public UpdateSuppliersResponse UpdateSuppliers(DateTime clientUtcTime, UpdateSuppliersRequest supplierDataIn)

@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using PriceListWcfService.Interfaces;
 using System.Configuration;
 using System.Data;
+using PriceListWcfService.DataContracts.Supplier;
 
 namespace PriceListWcfService
 {
@@ -34,6 +35,50 @@ namespace PriceListWcfService
                     }
                 }
             }
+
+            /// <summary>
+            ///     Get a list of suppliers from the database Suppliers.Supplier table
+            /// </summary>
+            /// <returns>
+            ///     Returns a collection of <see cref="SupplierDTO"/> objects.
+            /// </returns>
+            public IEnumerable<SupplierDTO> GetSuppliers()
+            {
+                List<SupplierDTO> result = new List<SupplierDTO>();
+
+                using (SqlConnection connection = CreateConnection())
+                {
+                    using (SqlCommand dbCommand = connection.CreateCommand())
+                    {
+                        dbCommand.CommandText = "[Suppliers].[GetSuppliers]";
+                        dbCommand.CommandType = CommandType.StoredProcedure;
+                        using (SqlDataReader dataReader = dbCommand.ExecuteReader())
+                        {
+                            Int32 colIndexSupplierID = dataReader.GetOrdinal("SupplierID");
+                            Int32 colIndexUniqueID = dataReader.GetOrdinal("UniqueID");
+                            Int32 colIndexCode = dataReader.GetOrdinal("Code");
+                            Int32 colIndexDescr = dataReader.GetOrdinal("Descr");
+                            Int32 colIndexAddressDetail = dataReader.GetOrdinal("AddressDetail");
+
+                            while (dataReader.Read())
+                            {
+                                SupplierDTO addRec = new SupplierDTO()
+                                {
+                                    SupplierID = dataReader.GetInt32(colIndexSupplierID),
+                                    UniqueIdentifier = dataReader.GetGuid(colIndexUniqueID),
+                                    Code = dataReader.GetString(colIndexCode),
+                                    Descr = dataReader.GetString(colIndexDescr),
+                                    Address = dataReader.GetString(colIndexAddressDetail).Split('\n')
+                                };
+
+                                result.Add(addRec);
+                            }
+                        }
+                    }
+                }
+
+                return result;
+            }
             #endregion IDataAccess implementation
 
             #region IDisposable implementation
@@ -58,7 +103,6 @@ namespace PriceListWcfService
                 dbConnection.Open();
                 return dbConnection;
             }
-
             #endregion Helper methods
         } // class SqlServerDataAccess
     } // namespace Model

@@ -12,7 +12,7 @@ namespace PriceListWcfService
         /// </summary>
         [DataContract]
         public class GetSuppliersResponse : ResponseHeader
-        {/*
+        {
             /// <summary>
             ///     Storage for the <see cref="Suppliers"/> property
             /// </summary>
@@ -32,7 +32,7 @@ namespace PriceListWcfService
                 {
                     this.mSuppliers = value;
                 }
-            }*/
+            }
         }
     } // namespace DataContracts
 } // namespace PriceListWcfService

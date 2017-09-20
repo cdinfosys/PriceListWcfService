@@ -49,6 +49,10 @@
       <Project>{762b087b-38b5-4810-8439-76b3d1c20a51}</Project>
       <Name>PriceListWcfService.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PriceListWcfService.DataContracts\PriceListWcfService.DataContracts.csproj">
+      <Project>{ba543d56-9553-487c-bb01-68ce3350143f}</Project>
+      <Name>PriceListWcfService.DataContracts</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
