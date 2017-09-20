@@ -1,15 +1,16 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PriceListWcfService")]
-[assembly: AssemblyDescription("Price List Manager WCF backend service")]
+[assembly: AssemblyTitle("Interfaces")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("CDesign Information Systems (Pty) Ltd")]
-[assembly: AssemblyProduct("PriceListManager")]
-[assembly: AssemblyCopyright("Copyright © 2017")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("Interfaces")]
+[assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("47e4817b-5bc7-40d6-9424-ced5cedbad47")]
+[assembly: Guid("762b087b-38b5-4810-8439-76b3d1c20a51")]
 
 // Version information for an assembly consists of the following four values:
 //
