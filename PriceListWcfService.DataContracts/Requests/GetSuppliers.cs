@@ -8,6 +8,14 @@ namespace PriceListWcfService
     namespace DataContracts
     {
         /// <summary>
+        ///     Request object for retrieving a list of suppliers
+        /// </summary>
+        [DataContract]
+        public class GetSuppliersRequest : RequestHeader
+        {
+        } // class GetSuppliersRequest
+
+        /// <summary>
         ///     Response object for the <see cref="IPriceListService.GetSuppliers()" service call./> 
         /// </summary>
         [DataContract]

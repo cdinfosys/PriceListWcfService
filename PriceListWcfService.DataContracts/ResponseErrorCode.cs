@@ -10,11 +10,29 @@ namespace PriceListWcfService
         [DataContract]
         public enum ResponseErrorCode
         {
+            /// <summary>
+            ///     The operation was successful.
+            /// </summary>
             [EnumMember]
             NoError = 0,
 
+            /// <summary>
+            ///     An exception was caught
+            /// </summary>
             [EnumMember]
-            ExceptionCaught,
+            ExceptionCaught = 100,
+
+            /// <summary>
+            ///     The user is not logged in.
+            /// </summary>
+            [EnumMember]
+            NotLoggedIn = 200,
+
+            /// <summary>
+            ///     The user session expired
+            /// </summary>
+            [EnumMember]
+            SessionExpired = 300,
         } // enum ResponseErrorCodes
     } // namespace DataContracts
 } // namespace PriceListWcfService

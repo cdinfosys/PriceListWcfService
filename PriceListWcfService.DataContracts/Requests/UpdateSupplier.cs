@@ -11,7 +11,7 @@ namespace PriceListWcfService
         ///     Payload for the UpdateSuppliers service call.
         /// </summary>
         [DataContract]
-        public class UpdateSuppliersRequest
+        public class UpdateSuppliersRequest : RequestHeader
         {
             private List<SupplierDTO> mSupplierRecords;
 

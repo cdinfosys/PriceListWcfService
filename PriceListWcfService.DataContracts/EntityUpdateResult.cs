@@ -61,14 +61,14 @@ namespace PriceListWcfService
             }
 
             [DataMember]
-            public Int32 MErrorCode
+            public Int32 ErrorCode
             {
                 get { return mErrorCode; }
                 set { this.mErrorCode = value; }
             }
 
             [DataMember]
-            public String MErrorMessage
+            public String ErrorMessage
             {
                 get { return mErrorMessage; }
                 set { this.mErrorMessage = value; }
