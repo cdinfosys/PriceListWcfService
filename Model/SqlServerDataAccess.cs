@@ -67,6 +67,7 @@ namespace PriceListWcfService
                             Int32 colIndexCode = dataReader.GetOrdinal("Code");
                             Int32 colIndexDescr = dataReader.GetOrdinal("Descr");
                             Int32 colIndexAddressDetail = dataReader.GetOrdinal("AddressDetail");
+                            Int32 colIndexLastUpdateTime = dataReader.GetOrdinal("LastUpdateTime");
 
                             while (dataReader.Read())
                             {
@@ -76,7 +77,8 @@ namespace PriceListWcfService
                                     UniqueIdentifier = dataReader.GetGuid(colIndexUniqueID),
                                     Code = dataReader.GetString(colIndexCode),
                                     Descr = dataReader.GetString(colIndexDescr),
-                                    Address = StringToStringCollection(dataReader.GetString(colIndexAddressDetail))
+                                    Address = StringToStringCollection(dataReader.GetString(colIndexAddressDetail)),
+                                    LastUpdateTime = dataReader.GetDateTime(colIndexLastUpdateTime)
                                 };
 
                                 result.Add(addRec);
@@ -100,7 +102,7 @@ namespace PriceListWcfService
             /// <remarks>
             ///     When the return code is 1 the <paramref name="updateRec"/> is updated with the current values in the database.
             /// </remarks>
-            public Int32 UpdateSupplier(ExtSupplierDTO updateRec)
+            public ExtSupplierDTO UpdateSupplier(ExtSupplierDTO updateRec)
             {
                 using (SqlConnection connection = CreateConnection())
                 {
@@ -136,32 +138,79 @@ namespace PriceListWcfService
                             Int32 colIndexDescr = dataReader.GetOrdinal("Descr");
                             Int32 colIndexAddressDetail = dataReader.GetOrdinal("AddressDetail");
                             Int32 colIndexLastUpdateTime = dataReader.GetOrdinal("LastUpdateTime");
-                            Int32 colIndexSystemUserID = dataReader.GetOrdinal("colIndexSystemUserID");
+                            Int32 colIndexSystemUserID = dataReader.GetOrdinal("SystemUserID");
 
                             dataReader.Read();
-                            updateRec.SupplierID = dataReader.GetInt32(colIndexSupplierID);
-                            updateRec.UniqueIdentifier = dataReader.GetGuid(colIndexUniqueID);
-                            updateRec.Code = dataReader.GetString(colIndexCode);
-                            updateRec.Descr = dataReader.GetString(colIndexDescr);
-                            updateRec.Address = dataReader.IsDBNull(colIndexAddressDetail) ? new List<String>() : new List<String>(StringToStringCollection(dataReader.GetString(colIndexAddressDetail)));
-                            updateRec.LastUpdateTime = dataReader.GetDateTime(colIndexLastUpdateTime);
-                            updateRec.SystemUserID = dataReader.GetInt32(colIndexSystemUserID);
+                            ExtSupplierDTO result = updateRec.Clone() as ExtSupplierDTO;
+                            result.SupplierID = dataReader.GetInt32(colIndexSupplierID);
+                            result.UniqueIdentifier = dataReader.GetGuid(colIndexUniqueID);
+                            result.Code = dataReader.GetString(colIndexCode);
+                            result.Descr = dataReader.GetString(colIndexDescr);
+                            result.Address = dataReader.IsDBNull(colIndexAddressDetail) ? new List<String>() : new List<String>(StringToStringCollection(dataReader.GetString(colIndexAddressDetail)));
+                            result.LastUpdateTime = dataReader.GetDateTime(colIndexLastUpdateTime);
+                            result.SystemUserID = dataReader.GetInt32(colIndexSystemUserID);
+                            result.ResultCode = dataReader.GetInt32(colIndexActionCode);
 
-                            return dataReader.GetInt32(colIndexActionCode);
+                            return result;
                         }
                     }
                 }
             }
 
             /// <summary>
-            ///     Delete a Suppliers.Supplier record
+            ///     Mark a Suppliers.Supplier record as inactive
             /// </summary>
-            /// <param name="supplierID">
-            ///     ID of the record to delete.
+            /// <param name="systemUserID">
+            ///     User ID of the user updating the record.
             /// </param>
-            public void DeleteSupplier(Int32 supplierID)
+            /// <param name="recordUpdatedTime">
+            ///     UTC time when the record was updated.
+            /// </param>
+            /// <param name="supplierID">
+            ///     ID of the record to update.
+            /// </param>
+            /// <param name="isRetired">
+            ///     Flag to indicate the retired state of the supplier
+            /// </param>
+            public ExtSupplierDTO RetireSupplier(Int32 systemUserID, DateTime recordUpdatedTime, Int32 supplierID, Boolean isRetired)
             {
-                // Cannot delete suppliers at present.
+                using (SqlConnection connection = CreateConnection())
+                {
+                    using (SqlCommand dbCommand = connection.CreateCommand())
+                    {
+                        dbCommand.CommandText = "[Suppliers].[RetireSupplier]";
+                        dbCommand.CommandType = CommandType.StoredProcedure;
+                        dbCommand.Parameters.AddWithValue("@supplierID", supplierID);
+                        dbCommand.Parameters.AddWithValue("@retiredState", isRetired ? 1 : 0);
+                        dbCommand.Parameters.AddWithValue("@recordUpdatedTime", recordUpdatedTime);
+                        dbCommand.Parameters.AddWithValue("@systemUserID", systemUserID);
+
+                        using (SqlDataReader dataReader = dbCommand.ExecuteReader())
+                        {
+                            Int32 colIndexActionCode = dataReader.GetOrdinal("ActionCode");
+                            Int32 colIndexSupplierID = dataReader.GetOrdinal("SupplierID");
+                            Int32 colIndexUniqueID = dataReader.GetOrdinal("UniqueID");
+                            Int32 colIndexCode = dataReader.GetOrdinal("Code");
+                            Int32 colIndexDescr = dataReader.GetOrdinal("Descr");
+                            Int32 colIndexAddressDetail = dataReader.GetOrdinal("AddressDetail");
+                            Int32 colIndexLastUpdateTime = dataReader.GetOrdinal("LastUpdateTime");
+                            Int32 colIndexSystemUserID = dataReader.GetOrdinal("SystemUserID");
+
+                            dataReader.Read();
+                            ExtSupplierDTO result =new ExtSupplierDTO();
+                            result.SupplierID = dataReader.GetInt32(colIndexSupplierID);
+                            result.UniqueIdentifier = dataReader.GetGuid(colIndexUniqueID);
+                            result.Code = dataReader.GetString(colIndexCode);
+                            result.Descr = dataReader.GetString(colIndexDescr);
+                            result.Address = dataReader.IsDBNull(colIndexAddressDetail) ? new List<String>() : new List<String>(StringToStringCollection(dataReader.GetString(colIndexAddressDetail)));
+                            result.LastUpdateTime = dataReader.GetDateTime(colIndexLastUpdateTime);
+                            result.SystemUserID = dataReader.GetInt32(colIndexSystemUserID);
+                            result.ResultCode = dataReader.GetInt32(colIndexActionCode);
+
+                            return result;
+                        }
+                    }
+                }
             }
 
             /// <summary>
@@ -170,7 +219,7 @@ namespace PriceListWcfService
             /// <param name="supplierRec">
             ///     New supplier details.
             /// </param>
-            public void AddSupplier(ExtSupplierDTO supplierRec)
+            public ExtSupplierDTO AddSupplier(ExtSupplierDTO supplierRec)
             {
                 using (SqlConnection connection = CreateConnection())
                 {
@@ -189,8 +238,11 @@ namespace PriceListWcfService
                             int colIndexUniqueID = dataReader.GetOrdinal("UniqueID");
 
                             dataReader.Read();
-                            supplierRec.SupplierID = dataReader.GetInt32(colIndexSupplierID);
-                            supplierRec.UniqueIdentifier = dataReader.GetGuid(colIndexUniqueID);
+                            ExtSupplierDTO result = supplierRec.Clone() as ExtSupplierDTO;
+                            result.ResultCode = 0;
+                            result.SupplierID = dataReader.GetInt32(colIndexSupplierID);
+                            result.UniqueIdentifier = dataReader.GetGuid(colIndexUniqueID);
+                            return result;
                         }
                     }
                 }

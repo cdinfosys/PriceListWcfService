@@ -14,11 +14,13 @@ namespace PriceListWcfService
             [DataContract]
             public class SupplierDTO : ICloneable
             {
-                private Int32 mSupplierID;
-                private Guid mUniqueIdentifier;
-                private String mCode;
-                private String mDescr;
-                private IList<String> mAddress;
+                protected Int32 mSupplierID;
+                protected Guid mUniqueIdentifier;
+                protected String mCode;
+                protected String mDescr;
+                protected IList<String> mAddress;
+                protected Boolean mIsRetired;
+                protected DateTime mLastUpdateTime;
 
                 [DataMember]
                 public Int32 SupplierID 
@@ -55,6 +57,19 @@ namespace PriceListWcfService
                     set { this.mAddress = value; }
                 }
 
+                [DataMember]
+                protected Boolean IsRetired
+                {
+                    get { return this.mIsRetired; }
+                    set { this.mIsRetired = value; }
+                }
+
+                public DateTime LastUpdateTime
+                {
+                    get { return this.mLastUpdateTime; }
+                    set { this.mLastUpdateTime = value; }
+                }
+
                 public Object Clone()
                 {
                     return new SupplierDTO()
@@ -63,7 +78,8 @@ namespace PriceListWcfService
                         mUniqueIdentifier = this.mUniqueIdentifier,
                         mCode = this.mCode,
                         mDescr = this.mDescr,
-                        mAddress = this.mAddress
+                        mAddress = this.mAddress,
+                        mLastUpdateTime = this.mLastUpdateTime
                     };
                 }
             } // class SupplierDTO
@@ -71,21 +87,35 @@ namespace PriceListWcfService
             /// <summary>
             ///     Supplier DTO with some additional fields for internal use
             /// </summary>
-            public class ExtSupplierDTO : SupplierDTO
+            public class ExtSupplierDTO : SupplierDTO, ICloneable
             {
-                private DateTime mLastUpdateTime;
-                private Int32 mSystemUserID;
-
-                public DateTime LastUpdateTime
-                {
-                    get { return this.mLastUpdateTime; }
-                    set { this.mLastUpdateTime = value; }
-                }
+                protected Int32 mSystemUserID;
+                protected Int32 mResultCode;
 
                 public Int32 SystemUserID
                 {
                     get { return this.mSystemUserID; }
                     set { this.mSystemUserID = value; }
+                }
+
+                public Int32 ResultCode
+                {
+                    get { return this.mResultCode; }
+                    set { this.mResultCode = value; }
+                }
+
+                public new Object Clone()
+                {
+                    return new ExtSupplierDTO()
+                    {
+                        mSupplierID = this.mSupplierID,
+                        mUniqueIdentifier = this.mUniqueIdentifier,
+                        mCode = this.mCode,
+                        mDescr = this.mDescr,
+                        mAddress = this.mAddress,
+                        mSystemUserID = this.mSystemUserID,
+                        mResultCode = this.mResultCode
+                    };
                 }
             }
         } // namespace Supplier

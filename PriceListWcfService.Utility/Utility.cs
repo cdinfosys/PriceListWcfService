@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
 
 namespace PriceListWcfService
 {
@@ -10,6 +11,26 @@ namespace PriceListWcfService
     {
         public static class Utility
         {
+            #region Class members
+            /// <summary>
+            ///     Instance of the logger class.
+            /// </summary>
+            private static Logger mLogger;
+            #endregion // Class members
+
+            #region Construction
+            static Utility()
+            {
+                mLogger = LogManager.GetCurrentClassLogger();
+            }
+            #endregion Construction
+
+            #region Public properties
+            /// <summary>
+            ///     Gets the instance of the Logger.
+            /// </summary>
+            public static Logger EventLogger => Utility.mLogger;
+
             /// <summary>
             ///     Gets the name of the mutex to use when accessing the Supplier.Supplier table.
             /// </summary>
@@ -139,6 +160,7 @@ namespace PriceListWcfService
                 }
                 return result;
             }
+            #endregion Public properties
         } // class Utility
     } // namespace Utility
 } // namespace PriceListWcfService

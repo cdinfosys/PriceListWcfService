@@ -22,6 +22,11 @@ namespace PriceListWcfService.Helpers
         ///     Storage for the <see cref="SystemUserId"/> property.
         /// </summary>
         private readonly Int32 mSystemUserID;
+
+        /// <summary>
+        ///     Time difference between the client making a call to the server and the time on the server.
+        /// </summary>
+        private TimeSpan mClientServerTimeDifference;
         #endregion // Private data members
 
         #region Construction
@@ -34,11 +39,13 @@ namespace PriceListWcfService.Helpers
         public SuppliersMergeParameter
         (
             IDataAccess dataAccessObject,
-            Int32 systemUserID
+            Int32 systemUserID,
+            TimeSpan clientServerTimeDifference
         )
         {
             this.mDataAccessObject = dataAccessObject;
             this.mSystemUserID = systemUserID;
+            this.mClientServerTimeDifference = clientServerTimeDifference;
         }
         #endregion // Construction
 
@@ -53,6 +60,10 @@ namespace PriceListWcfService.Helpers
         /// </summary>
         public Int32 SystemUserID => mSystemUserID;
 
+        /// <summary>
+        ///     Gets the time difference calculated between the time on the client machine and the time on the server.
+        /// </summary>
+        public TimeSpan ClientServerTimeDifference => this.mClientServerTimeDifference;
         #endregion // Public accessor methods
     } // class SuppliersMergeParameter
 } // namespace PriceListWcfService.Helpers

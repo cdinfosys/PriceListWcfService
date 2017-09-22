@@ -47,15 +47,24 @@ namespace PriceListWcfService
             /// <param name="updateRec">
             ///     Updated record values.
             /// </param>
-            Int32 UpdateSupplier(ExtSupplierDTO updateRec);
+            ExtSupplierDTO UpdateSupplier(ExtSupplierDTO updateRec);
 
             /// <summary>
-            ///     Delete a Suppliers.Supplier record
+            ///     Mark a Suppliers.Supplier record as inactive
             /// </summary>
-            /// <param name="supplierID">
-            ///     ID of the record to delete.
+            /// <param name="systemUserID">
+            ///     User ID of the user updating the record.
             /// </param>
-            void DeleteSupplier(Int32 supplierID);
+            /// <param name="recordUpdatedTime">
+            ///     UTC time when the record was updated.
+            /// </param>
+            /// <param name="supplierID">
+            ///     ID of the record to update.
+            /// </param>
+            /// <param name="isRetired">
+            ///     Flag to indicate the retired state of the supplier
+            /// </param>
+            ExtSupplierDTO RetireSupplier(Int32 systemUserID, DateTime recordUpdatedTime, Int32 supplierID, Boolean isRetired);
 
             /// <summary>
             ///     Add a new record to Suppliers.Supplier
@@ -63,7 +72,7 @@ namespace PriceListWcfService
             /// <param name="supplierRec">
             ///     New supplier details.
             /// </param>
-            void AddSupplier(ExtSupplierDTO supplierRec);
+            ExtSupplierDTO AddSupplier(ExtSupplierDTO supplierRec);
 
             /// <summary>
             ///     Convert a collection of strings into a delimited string for storage in the database.

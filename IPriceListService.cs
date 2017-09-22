@@ -8,6 +8,15 @@ namespace PriceListWcfService
     [ServiceContract] 
     public interface IPriceListService
     {
+        #region Helper methods
+        /// <summary>
+        ///     The UI can call this method to check if the WCF service responds.
+        /// </summary>
+        [OperationContract]
+        Int32 CheckIfAlive(Int32 echoData);
+        #endregion Helper methods
+
+        #region Suppliers methods
         /// <summary>
         ///     Get all supplier records from the database.
         /// </summary>
@@ -31,5 +40,6 @@ namespace PriceListWcfService
         /// </returns>
         [OperationContract]
         UpdateSuppliersResponse UpdateSuppliers(UpdateSuppliersRequest supplierDataIn);
+        #endregion Suppliers methods
     } // interface IPriceListService
 } // namespace PriceListWcfService
